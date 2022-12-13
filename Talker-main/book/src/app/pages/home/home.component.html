@@ -1,0 +1,39 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+<mat-toolbar>
+    <span>
+        <button mat-icon-button *ngIf="sidenav.mode === 'over'" (click)="sidenav.toggle()">
+            <mat-icon *ngIf="!sidenav.opened">
+                menu
+            </mat-icon>
+            <mat-icon *ngIf="sidenav.opened">
+                close
+            </mat-icon>
+        </button>
+
+        Talker
+    </span>
+    <button mat-raised-button  (click)="logout()">Wyloguj się</button>
+    </mat-toolbar>
+
+  <mat-sidenav-container (click)="sidenav.toggle()">
+    
+    <mat-sidenav #sidenav="matSidenav" class="mat-elevation-z8"  [fixedInViewport]="true">
+        Znajomi 
+        <ng-container #container></ng-container>
+        <!-- <app-friend></app-friend>    
+        <app-friend></app-friend>    
+        <app-friend></app-friend>     -->
+        
+    </mat-sidenav>
+</mat-sidenav-container>
+
+<app-chat></app-chat>
+
+<div id="container">
+    <input type="text" id="textbox" #message>
+
+</div>
+<button id="send_bt" (click)="messageSend(message.value)"  style="background-color:#cce0ff;" mat-fab >
+    <mat-icon>send</mat-icon>
+</button>
