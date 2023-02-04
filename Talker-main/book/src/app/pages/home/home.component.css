@@ -24,17 +24,11 @@ mat-sidenav{
     justify-content: center;
     width: 960px;
     font-size: 3em;
-
 }
 #container{
-
     display: flex;
     justify-content: center;
     background-color: rgb(230, 240, 255);
-    height: 8%;
+    justify-content: center;
+    align-items: center;
 }
-#send_bt{
-    top: -7%;
-    margin-right: 20%;
-    float: right;
-}   

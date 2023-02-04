@@ -31,7 +31,6 @@ public class UserServiceImp implements UserService {
             ResultSet rs =  statement.executeQuery();
 
             while (rs.next()){
-                System.out.println("query "+rs.getString(1));
                 if (rs.getString(1).equals(login) && rs.getString(2).equals(password)){
                     valid = true;
                     System.out.println("znaleziono");

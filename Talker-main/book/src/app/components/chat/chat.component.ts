@@ -1,12 +1,12 @@
-import { Component, Input, OnInit, Directive, ViewContainerRef, ComponentFactoryResolver, ViewChild, ElementRef, Inject } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, ViewChild, ElementRef} from '@angular/core';
 import { RightChatComponent } from '../right-chat/right-chat.component';
 import { LeftChatComponent } from '../left-chat/left-chat.component';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { HomeComponent } from 'src/app/pages/home/home.component';
-import { FriendComponent } from '../friend/friend.component';
+import { HttpClient} from '@angular/common/http';
 import { SharedService } from 'src/app/shared/shared.service';
-import { io } from "socket.io-client";
-import { socket } from 'src/app/pages/home/home.component';
+import * as SockJS from 'sockjs-client';
+import * as Stomp from "stompjs"
+
+let stompClient: any = null;
 
 @Component({
   selector: 'app-chat',
@@ -15,112 +15,73 @@ import { socket } from 'src/app/pages/home/home.component';
 })
 export class ChatComponent implements OnInit {
 
-
   message!: string;
 
+  constructor(private http: HttpClient, private shared: SharedService) { }
 
-  constructor(private componentFactoryResolver: ComponentFactoryResolver, private http: HttpClient, private shared: SharedService) { }
+  connect(){
+    let sock = new SockJS("http://localhost:8080/chat");
+    stompClient = Stomp.over(sock)
+    stompClient.connect({}, () =>{
+      stompClient.subscribe("/message", (mess:any) =>{
+ 
+        if(JSON.parse(mess.body).from == localStorage.getItem("who")){
+          let a = this.container.createComponent(RightChatComponent)
+          a.instance.item = JSON.parse(mess.body).msg
+          a.instance.from = JSON.parse(mess.body).from
 
+        }else{
+          let a = this.container.createComponent(LeftChatComponent)
+          a.instance.item = JSON.parse(mess.body).msg
+          a.instance.from = JSON.parse(mess.body).from
+        }
 
+      })
+      
+    })
+  }
+  
 
   @ViewChild("ref", { read: ViewContainerRef }) container!: ViewContainerRef;
   ngOnInit(): void {
-    // this.shared.clickEvent.subscribe((data:string) => {console.log(data)})
-
-    const right = this.componentFactoryResolver.resolveComponentFactory(LeftChatComponent);
-    console.log(this.container)
-    //  this.viewContainerRef.createComponent(right)
-
+    this.shared.clickEvent.subscribe((data:string) => {})
   }
+
   currentItem = "Test";
 
-  ngAfterViewInit() {
-    
+  @ViewChild('scroll') content!: ElementRef;
 
-    // const left = this.componentFactoryResolver.resolveComponentFactory(LeftChatComponent);
-    // const right = this.componentFactoryResolver.resolveComponentFactory(RightChatComponent);
+  ngAfterViewInit() {
+
+ 
+
+    this.http.get('http://localhost:8080/getMessages').subscribe((msg: any = null) => {
+      for(var i = 0; i < msg.length; i++){
+       if(msg[i][0] == localStorage.getItem("who")){
+        let a = this.container.createComponent(RightChatComponent)
+        a.instance.item = msg[i][1]
+        a.instance.from = msg[i][0]
+          
+       }else{
+          let a = this.container.createComponent(LeftChatComponent)
+          a.instance.item = msg[i][1]
+          a.instance.from = msg[i][0]
+       }
+            
+      }
+         
+    })
+
+    this.connect()
 
     this.shared.clickEvent.subscribe((data: string) => {
-     
-      console.log(data)
       this.shared.set(data)
-      console.log(this.container.indexOf)
-      let rem = document.getElementById("chat")?.childElementCount
-    
-      
-      this.http.post<any>('http://localhost:3000/api/query', { action: 'getMessages', receiverID: data }).subscribe(msg => {
-        console.log(msg.messages)
-      
-        for(var i = 0; i < 1000; i++){
-          this.container.remove()
-        }
-
-        for(var i = 0; i < msg.messages.length; i++){
-          if(msg.messages[i].senderID == data){
-            
-            this.container.createComponent(LeftChatComponent).instance.item = msg.messages[i].message
-          }else{
-            this.container.createComponent(RightChatComponent).instance.item = msg.messages[i].message
-          }
-        }
-        
-      })
-
-
     })
-
-    socket.on('connect', () => {
-      console.log("CONNECTED");
-      
-
-
-      socket.on("messageSent", data => {
-        this.http.post<any>('http://localhost:3000/api/query', { action: 'getUserID' }).subscribe(userid => {
-
-          console.log(userid)
-          console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxx")
-        console.log(data)
-        
-        if(data.senderID == userid.userID){
-            
-          let a = this.container.createComponent(RightChatComponent)
-          a.instance.item = data.message
-        }else{
-          let a = this.container.createComponent(LeftChatComponent)
-          a.instance.item = data.message
-        }
-
-
-   
-        })
-  
-        
-      })
-
-      socket.on("bbb", d => console.log(d));
-    })
-
-    // this.http.post<any>('http://localhost:3000/api/query', {action: 'getMessages'}).subscribe(data =>{
-
-    // })
-
-
-    this.http.get('http://localhost:8080/messages').subscribe((list: any = null) => {
-      
-    console.log(list)
-    console.log(list.length)   
-    const uniqueFriends:any = [...new Set(list)]
-    console.log(uniqueFriends)
-      //   console.log(list.users)
-  //   let id = list.users._id;
-    for(let i = 0; i < list.length; i++){
-      let a = this.container.createComponent(LeftChatComponent)
-      a.instance.item = list[i][1]
-    }
-
-
-  })
 
   }
 
+  ngAfterViewChecked() {
+    this.content.nativeElement.scrollTop = this.content.nativeElement.scrollHeight;
+  
+}
 }

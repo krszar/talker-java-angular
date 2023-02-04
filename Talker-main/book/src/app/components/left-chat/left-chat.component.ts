@@ -15,4 +15,5 @@ export class LeftChatComponent implements OnInit {
   }
 
   @Input() item = '';
+  @Input() from = '';
 }

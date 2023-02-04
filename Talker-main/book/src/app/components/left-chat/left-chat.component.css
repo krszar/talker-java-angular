@@ -6,3 +6,7 @@
     width: fit-content;
     margin: 1%;
 }
+#from{
+    display: inline;
+    color: gray;
+}

@@ -5,9 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class dbClass {
-
     private static Connection connection = null;
-
     public static Connection getConnection() throws SQLException {
         if (connection != null){
             return connection;
@@ -18,7 +16,6 @@ public class dbClass {
             String password = "admin";
 
             try {
-                //może niepotrzebne
                 Class.forName(driver);
                 connection = DriverManager.getConnection(url, user, password);
             } catch (ClassNotFoundException e) {

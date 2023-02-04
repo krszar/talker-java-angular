@@ -12,6 +12,6 @@ export class RightChatComponent implements OnInit {
   ngOnInit(): void {
   }
 
-
   @Input() item = '';
+  @Input() from = '';
 }

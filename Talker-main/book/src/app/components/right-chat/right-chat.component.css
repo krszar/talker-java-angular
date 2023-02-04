@@ -6,6 +6,8 @@
     width: fit-content;
     margin: 1%;
     float: right;
-    
-
+}
+#from{
+    display: inline;
+    color: gray;
 }

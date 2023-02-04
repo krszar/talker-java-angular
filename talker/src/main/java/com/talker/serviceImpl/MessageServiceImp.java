@@ -1,6 +1,7 @@
 package com.talker.serviceImpl;
 
 import com.talker.db.dbClass;
+import com.talker.model.MessageModel;
 import com.talker.service.MessageService;
 import org.springframework.stereotype.Service;
 
@@ -32,13 +33,22 @@ public class MessageServiceImp implements MessageService {
                 temp[0] = rs.getString(1);
                 temp[1] = rs.getString(2);
                 tab.add(List.of(temp));
-                System.out.println("przedtab "+tab+"temp "+temp);
 
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
         return tab;
+    }
+
+    @Override
+    public void saveMsg(String from, String msg){
+        try {
+            PreparedStatement statement = connection.prepareStatement
+                    ("INSERT INTO messages VALUES('"+from+"','"+msg+"')");
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormControl, Validators, FormGroup, FormBuilder} from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
-
+import { SharedService } from 'src/app/shared/shared.service';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +11,6 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
   hide = true;
-
 
   email = new FormControl('', [Validators.required, Validators.email]);
 
@@ -25,8 +24,6 @@ export class LoginComponent implements OnInit {
 
   public loginForm !: FormGroup
 
-
-
   constructor(private formBuilder : FormBuilder, private http: HttpClient, private router: Router) { }
 
   ngOnInit(): void {
@@ -35,7 +32,6 @@ export class LoginComponent implements OnInit {
       password: [''],
       'action': ['login']
     })
-
  
   }
 
@@ -43,18 +39,13 @@ export class LoginComponent implements OnInit {
     this.router.navigate(['/home'])
   }
 
-
-
   login(){
 
-    const headers = new HttpHeaders().set('Content-Type','application/json');
-    console.log(this.loginForm.value) 
-    console.log("test")
-    console.log(this.loginForm.value.login+'/'+this.loginForm.value.password)
     this.http.get('http://localhost:8080/login/'+this.loginForm.value.login+'/'+this.loginForm.value.password).subscribe(data => {
-      console.log(data)
 
-            if(data == true){
+        if(data == true){
+           
+              localStorage.setItem("who", this.loginForm.value.login)
         this.gotoHome()
 
       }else{
@@ -64,21 +55,6 @@ export class LoginComponent implements OnInit {
       }
     })
     
-    // this.http.post<any>('http://localhost:3000/api/query', JSON.stringify(this.loginForm.value),{headers: headers}).subscribe(data => {
-    //   console.log(data)
-      
-    //   if(data.success == true){
-    //     this.gotoHome()
-
-    //   }else{
-    //     alert(data.message);
-    //     (document.getElementById("mat-input-0") as HTMLInputElement).value="";
-    //     (document.getElementById("mat-input-1") as HTMLInputElement).value="";  
-    //   }
-    // }
-    
-    // )
   }
-  
 
 }

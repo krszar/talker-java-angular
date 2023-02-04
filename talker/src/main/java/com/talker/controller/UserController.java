@@ -1,11 +1,8 @@
 package com.talker.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.talker.service.UserService;
-import org.springframework.web.jsf.FacesContextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +15,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-//    public HttpSession session;
     @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("login/{login}/{password}")
     public boolean UserLogin(@PathVariable("login") String login1, @PathVariable("password") String password1){
@@ -30,7 +26,6 @@ public class UserController {
 
         }
         System.out.println("Błędny login");
-
         return valid;
 
     }
@@ -47,9 +42,8 @@ public class UserController {
     public boolean UserCheck(){
 
         boolean check = userService.isLog(user);
-        System.out.println(check);
-        return check;
 
+        return check;
 
     }
     @CrossOrigin(origins = "http://localhost:4200")
@@ -74,9 +68,7 @@ public class UserController {
         for (int i =0; i < fr.size(); i++){
             arr[i] = fr.get(i);
         }
-        System.out.println(arr);
         return arr;
     }
-
 
 }

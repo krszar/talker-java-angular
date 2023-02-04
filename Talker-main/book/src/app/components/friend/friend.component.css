@@ -1,7 +1,5 @@
-
 #friend{
     background-color: white;
-    
     width: 90%;
     height: 7%;
     margin: 5%;
@@ -9,8 +7,6 @@
     border-radius: 10px;
     display: flex;
     align-items: center;
-    
-
 }
 
 #txt{
@@ -18,8 +14,6 @@
     width: 80%;
     font-size: 0.7em;
     top: 50%;
-    
-
 }
 
 img{
